@@ -1,73 +1,70 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const fs = require('fs');
+const path = './db_clientes.txt';
 
+// Função auxiliar para carregar os dados do arquivo
+function carregarClientes() {
+  if (!fs.existsSync(path)) return [];
+  const dados = fs.readFileSync(path, 'utf8');
+  return dados ? JSON.parse(dados) : [];
+}
 
+// Função auxiliar para salvar os dados
+function salvarClientes(clientes) {
+  fs.writeFileSync(path, JSON.stringify(clientes, null, 2));
+}
 
-router.post('/', async (req, res) => {
+// POST - Criar cliente
+router.post('/', (req, res) => {
   const { nome, email, telefone } = req.body;
-  try {
-    const [result] = await db.query(
-      'INSERT INTO clientes (nome, email, telefone) VALUES (?, ?, ?)',
-      [nome, email, telefone]
-    );
-    res.status(201).json({ id: result.insertId, nome, email, telefone });
-  } catch (err) {
-    res.status(500).json({ message: 'Erro ao criar cliente' });
-  }
+  const clientes = carregarClientes();
+
+  const novoCliente = {
+    id: clientes.length ? clientes[clientes.length - 1].id + 1 : 1,
+    nome, email, telefone
+  };
+
+  clientes.push(novoCliente);
+  salvarClientes(clientes);
+  res.status(201).json(novoCliente);
 });
 
-router.get('/', async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM clientes");
-    res.json(rows)
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({ message: "Erro de buscar cliente" })
-  }
+// GET - Listar todos
+router.get('/', (req, res) => {
+  const clientes = carregarClientes();
+  res.json(clientes);
 });
 
-router.get('/:id', async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM clientes WHERE id = ?", [req.params.id]);
-    if (rows.length === 0) return res.status(404).json({ message: "Cliente não encontrado" });
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ message: "Erro ao buscar cliente por ID" });
-  }
+// GET por ID
+router.get('/:id', (req, res) => {
+  const clientes = carregarClientes();
+  const cliente = clientes.find(c => c.id === +req.params.id);
+  if (!cliente) return res.status(404).json({ message: 'Cliente não encontrado' });
+  res.json(cliente);
 });
 
+// PUT - Atualizar
+router.put('/:id', (req, res) => {
+  const { nome, email, telefone } = req.body;
+  const clientes = carregarClientes();
+  const index = clientes.findIndex(c => c.id === +req.params.id);
+  if (index === -1) return res.status(404).json({ message: 'Cliente não encontrado' });
 
-router.put('/:id', async (req, res) =>{
-  const {nome, email, telefone} = req.body;
-  try{
-    const [result] = await db.query(
-      "UPDATE clientes SET nome=?, email=?, telefone=?  where id = ?",
-      [nome, email, telefone, req.params.id]
-    )
-    if(!result.affectedRows){
-      return res.status(404).json({message: 'Cliente não encontrado'})
-    }
-      
-    res.json({id: +req.params.id, nome, email, telefone})
-  }catch{
-    res.status(500).json({message: "Erro ao atualizar cliente"})
-  }
-})
+  clientes[index] = { id: +req.params.id, nome, email, telefone };
+  salvarClientes(clientes);
+  res.json(clientes[index]);
+});
 
-router.delete('/:id', async (req, res) => {
-  try {
-    const [result] = await db.query('DELETE FROM clientes WHERE id = ?', [req.params.id]);
-    if (result.affectedRows === 0) {
-      // Se nenhum cliente foi afetado, o ID não existe
-      return res.status(404).json({ message: 'Cliente não encontrado' });
-    }
-    // Cliente deletado com sucesso
-    res.status(200).json({ message: 'Cliente deletado com sucesso' });
-  } catch (err) {
-    // Erro ao tentar deletar o cliente
-    res.status(500).json({ message: 'Erro ao deletar cliente' });
-  }
+// DELETE - Excluir
+router.delete('/:id', (req, res) => {
+  let clientes = carregarClientes();
+  const originalLength = clientes.length;
+  clientes = clientes.filter(c => c.id !== +req.params.id);
+  if (clientes.length === originalLength) return res.status(404).json({ message: 'Cliente não encontrado' });
+
+  salvarClientes(clientes);
+  res.json({ message: 'Cliente deletado com sucesso' });
 });
 
 module.exports = router;
