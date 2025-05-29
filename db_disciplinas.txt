@@ -1,0 +1,8 @@
+[
+  {
+    "disciplina_lecionada_id": 1,
+    "professsor_id": "Vitor",
+    "disciplina_id": "Backend",
+    "turno": "Tarde"
+  }
+]
