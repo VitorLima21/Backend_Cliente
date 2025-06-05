@@ -1,0 +1,23 @@
+[
+  {
+    "professsor_id": 1,
+    "nome": "Vitor",
+    "email": "vitor@gmail.com",
+    "telefone": "12343",
+    "especialidade": "Backend"
+  },
+  {
+    "id": null,
+    "nome": "Yve",
+    "email": "yve@gmail.com",
+    "telefone": "119999999",
+    "especialidade": "Frontend"
+  },
+  {
+    "id": 1,
+    "nome": "Denny",
+    "email": "denny@gmail.com",
+    "telefone": "119999999",
+    "especialidade": "IoT"
+  }
+]
