@@ -1,0 +1,32 @@
+[
+  {
+    "disciplina_lecionada_id": 1,
+    "professor_id": "Vitor",
+    "disciplina_id": "Backend",
+    "turno": "Noite"
+  },
+  {
+    "disciplina_lecionada_id": 2,
+    "professor_id": "Samuel",
+    "disciplina_id": "Full-Stack",
+    "turno": "Tarde"
+  },
+  {
+    "disciplina_lecionada_id": 3,
+    "professor_id": "yve souza",
+    "disciplina_id": "PortuguÊs",
+    "turno": "Manhã"
+  },
+  {
+    "disciplina_lecionada_id": 4,
+    "professor_id": "SAmuel",
+    "disciplina_id": "fisica",
+    "turno": "Manhã"
+  },
+  {
+    "disciplina_lecionada_id": 5,
+    "professor_id": "dfs",
+    "disciplina_id": "Teste aaaaaaaaa",
+    "turno": "Noite"
+  }
+]

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
-const path = './db_disciplinas.txt';
+const path = './db_disciplina_lecionada.txt';
 
 function carregarDisciplinasLecionadas() {
   if (!fs.existsSync(path)) return [];
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
   console.log("Recebi do front:", req.body);
   
   const novaDisciplina = {
-    id: disciplinas.length ? disciplinas[disciplinas.length - 1].id + 1 : 1,
+    disciplina_lecionada_id: disciplinas.length ? disciplinas[disciplinas.length - 1].id + 1 : 1,
     professor_id,
     disciplina_id,
     turno
@@ -38,7 +38,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const disciplinas = carregarDisciplinasLecionadas();
-  const disciplina = disciplinas.find(c => c.id === +req.params.id);
+  const disciplina = disciplinas.find(c => c.disciplina_lecionada_id === +req.params.id);
   if (!disciplina) return res.status(404).json({ message: 'Disciplina não encontrada' });
   res.json(disciplina);
 });
@@ -46,10 +46,10 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   const { professor_id, disciplina_id, turno } = req.body;
   const disciplinas = carregarDisciplinasLecionadas();
-  const index = disciplinas.findIndex(c => c.id === +req.params.id);
+  const index = disciplinas.findIndex(c => c.disciplina_lecionada_id === +req.params.id);
   if (index === -1) return res.status(404).json({ message: 'Disciplina não encontrada' });
 
-  disciplinas[index] = { id: +req.params.id, professor_id, disciplina_id, turno };
+  disciplinas[index] = { disciplina_lecionada_id: +req.params.id, professor_id, disciplina_id, turno };
   salvarDisciplinasLecionadas(disciplinas);
   res.json(disciplinas[index]);
 });
@@ -57,7 +57,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   let disciplinas = carregarDisciplinasLecionadas();
   const originalLength = disciplinas.length;
-  disciplinas = disciplinas.filter(c => c.id !== +req.params.id);
+  disciplinas = disciplinas.filter(c => c.disciplina_lecionada_id !== +req.params.id);
   if (disciplinas.length === originalLength) return res.status(404).json({ message: 'Disciplina não encontrada' });
 
   salvarDisciplinasLecionadas(disciplinas);

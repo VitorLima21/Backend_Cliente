@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.use('/clientes', require('./routes/cliente'));
 app.use('/usuarios', require('./routes/usuario')); 
-app.use('/disciplinas', require('./routes/disciplina'));
+app.use('/disciplina_lecionada', require('./routes/disciplina_lecionada'));
 app.use('/professores', require('./routes/professor')); 
 
 const PORT = process.env.PORT || 3000;

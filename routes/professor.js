@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
   const professores = carregarProfessores();
 
   const novoProfessor = {
-    id: professores.length ? professores[professores.length - 1].id + 1 : 1,
+    professsor_id: professores.length ? professores[professores.length - 1].professsor_id + 1 : 1,
     nome, email, telefone, especialidade
   };
 
@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const professores = carregarProfessores();
-  const professor = professores.find(c => c.id === +req.params.id);
+  const professor = professores.find(c => c.professsor_id === +req.params.professsor_id);
   if (!professor) return res.status(404).json({ message: 'Professor não encontrado' });
   res.json(professor);
 });
@@ -42,10 +42,10 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   const { nome, email, telefone, especialidade } = req.body;
   const professores = carregarProfessores();
-  const index = professores.findIndex(c => c.id === +req.params.id);
+  const index = professores.findIndex(c => c.professsor_id === +req.params.id);
   if (index === -1) return res.status(404).json({ message: 'Professor não encontrado' });
 
-  professores[index] = { id: +req.params.id, nome, email, telefone, especialidade };
+  professores[index] = { professsor_id: +req.params.id, nome, email, telefone, especialidade };
   salvarProfessores(professores);
   res.json(professores[index]);
 });
@@ -53,7 +53,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   let professores = carregarProfessores();
   const originalLength = professores.length;
-  professores = professores.filter(c => c.id !== +req.params.id);
+  professores = professores.filter(c => c.professsor_id !== +req.params.professsor_id);
   if (professores.length === originalLength) return res.status(404).json({ message: 'Professor não encontrado' });
 
   salvarProfessores(professores);
