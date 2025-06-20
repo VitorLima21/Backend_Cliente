@@ -9,6 +9,10 @@ app.use(express.json());
 // Rotas
 app.use('/clientes', require('./routes/cliente'));
 app.use('/usuarios', require('./routes/usuario')); // <-- nova rota adicionada aqui
+app.use('/alunos', require('./routes/aluno')); 
+app.use('/responsaveis', require('./routes/responsaveis'));
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API rodando em http://localhost:${PORT}`));

@@ -16,17 +16,17 @@ function salvarAlunos(alunos) {
 
 // POST - Criar cliente
 router.post('/', (req, res) => {
-  const { alunoID, nome, data_nascimento, turma, email, telefone } = req.body;
+  const {  nome, data_nascimento, turma, email, telefone } = req.body;
   const alunos = carregarAluno();
 
-  const novoAluno= {
-    id: clientes.length ? alunos[alunos.length - 1].id + 1 : 1,
-    alunoID, nome, data_nascimento, turma, email, telefone
+  const novoAluno = {
+    id: alunos.length ? alunos[alunos.length - 1].id + 1 : 1,
+     nome, data_nascimento, turma, email, telefone
   };
 
   alunos.push(novoAluno);
   salvarAlunos(alunos);
-  res.status(201).json(novoAlunos);
+   res.status(201).json({ novoAluno});
 });
 
 // GET - Listar todos
@@ -43,23 +43,49 @@ router.get('/:id', (req, res) => {
   res.json(aluno);
 });
 
-// PUT - Atualizar
-router.put('/:id', (req, res) => {
-  const {alunoID, nome, data_nascimento, turma, email, telefone } = req.body;
+// PUT - Atualizar aluno
+router.put('/alunos/editar/:id', (req, res) => {
+  const { nome, data_nascimento, turma, email, telefone } = req.body;
+  const alunoId = +req.params.id; // Convertendo para número
+  
+  // Carrega os alunos existentes
   const alunos = carregarAluno();
-  const index = alunos.findIndex(c => c.id === +req.params.id);
-  if (index === -1) return res.status(404).json({ message: 'Aluno não encontrado' });
+  
+  // Encontra o índice do aluno
+  const index = alunos.findIndex(a => a.id === alunoId);
+  
+  if (index === -1) {
+    return res.status(404).json({ message: 'Aluno não encontrado' });
+  }
 
-  alunos[index] = { id: +req.params.id, alunoID, nome, data_nascimento, turma, email, telefone };
+  // Validação básica dos dados
+  if (!nome || !data_nascimento || !turma || !email || !telefone) {
+    return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+  }
+
+  // Atualiza apenas os campos permitidos, mantendo o ID original
+  alunos[index] = {
+    id: alunoId, // Mantém o ID original da URL
+    nome,
+    data_nascimento,
+    turma,
+    email,
+    telefone
+  };
+
+  // Salva no "banco de dados"
   salvarAlunos(alunos);
+  
+  // Retorna o aluno atualizado
   res.json(alunos[index]);
 });
+
 
 // DELETE - Excluir
 router.delete('/:id', (req, res) => {
   let alunos = carregarAluno();
   const originalLength = alunos.length;
-  alunnos = alunos.filter(c => c.id !== +req.params.id);
+  alunos = alunos.filter(c => c.id !== +req.params.id);
   if (alunos.length === originalLength) return res.status(404).json({ message: 'Aluno não encontrado' });
 
   salvarAlunos(alunos);

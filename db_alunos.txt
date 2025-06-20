@@ -1,0 +1,26 @@
+[
+  {
+    "id": 7,
+    "nome": "Isabella",
+    "data_nascimento": "01/01/1998",
+    "turma": "DSDA",
+    "email": "a@gmail.com",
+    "telefone": "123454545 "
+  },
+  {
+    "id": 8,
+    "nome": "Lavignya",
+    "data_nascimento": "16/07/2007",
+    "turma": "DSDA",
+    "email": "lavignya@gmail.com",
+    "telefone": "960028922"
+  },
+  {
+    "id": 9,
+    "nome": "Isa",
+    "data_nascimento": "2025-06-20",
+    "turma": "3B",
+    "email": "isa2@gmail.com",
+    "telefone": "123456789"
+  }
+]
